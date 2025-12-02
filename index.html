@@ -25,23 +25,18 @@
   .logo{text-align:center;font-size:34px;font-weight:900;letter-spacing:2px}
 
   .card{background:var(--card-bg);padding:18px;border-radius:12px;margin-top:12px}
-  .grid{display:flex;flex-direction:column;gap:16px}
-  @media(min-width:900px){.grid{flex-direction:row}.left{flex:1}.right{flex:1}}
-
-  .map-card{background:#222;color:#ccc;min-height:240px;display:flex;align-items:center;justify-content:center;border-radius:10px}
 
   input{padding:10px;border:none;border-radius:8px;width:100%}
   .btn{padding:10px 14px;background:#000;color:#fff;border:none;border-radius:8px;font-weight:700;margin-top:8px;cursor:pointer}
 
-  .loader{display:none;margin-top:10px;text-align:center}
-  .progress{width:80%;height:8px;background:rgba(255,255,255,0.15);margin:auto;border-radius:8px;overflow:hidden}
+  .loader{display:none;margin-top:10px;text-align:center;font-size:16px;font-weight:600}
+  .progress{width:80%;height:8px;background:rgba(255,255,255,0.15);margin:10px auto;border-radius:8px;overflow:hidden}
   .progress i{display:block;height:100%;width:0;background:white;transition:width 1.4s linear}
 
   .result{display:none;margin-top:12px;padding:14px;border-radius:10px;background:rgba(0,0,0,0.26)}
   .line{opacity:0;transform:translateY(6px);transition:.3s;margin:6px 0}
   .line.show{opacity:1;transform:translateY(0)}
 
-  /* History Panel */
   #historyPanel{
     display:none;
     background:rgba(0,0,0,0.3);
@@ -64,6 +59,7 @@
     <button class="btn" onclick="trackNow()">TRACK</button>
 
     <div id="loader" class="loader">
+      <span id="verifyText">Verifying Tracking Code…</span>
       <div class="progress"><i id="bar"></i></div>
     </div>
 
@@ -71,7 +67,7 @@
       <h3>Tracking Details</h3>
       <div id="detailLines"></div>
 
-      <button id="historyBtn" class="btn" style="margin-top:12px" onclick="toggleHistory()">
+      <button id="historyBtn" class="btn" style="margin-top:12px; display:none;" onclick="toggleHistory()">
         View Tracking History
       </button>
 
@@ -89,7 +85,8 @@
 </div>
 
 <script>
-const DEMO_CODE = "XXUK92502"; // You can change or keep this as placeholder
+// TWO valid tracking codes
+const VALID_CODES = ["XXUK92502", "XX-UK92502"];
 
 const LINES = [
   "<b>Status:</b> Not yet cleared",
@@ -112,16 +109,22 @@ function trackNow(){
   const bar = document.getElementById("bar");
   const result = document.getElementById("result");
   const detailDiv = document.getElementById("detailLines");
+  const historyBtn = document.getElementById("historyBtn");
+  const historyPanel = document.getElementById("historyPanel");
 
   result.style.display = "none";
+  historyBtn.style.display = "none";
+  historyPanel.style.display = "none";
+
   loader.style.display = "block";
   bar.style.width = "0%";
+
   setTimeout(()=> bar.style.width="100%", 50);
 
   setTimeout(()=>{
     loader.style.display="none";
 
-    if(input === DEMO_CODE){
+    if(VALID_CODES.includes(input)){
       result.style.display="block";
       detailDiv.innerHTML = "";
 
@@ -134,6 +137,8 @@ function trackNow(){
           setTimeout(()=> d.classList.add("show"), 20);
         }, i * 200);
       });
+
+      historyBtn.style.display = "block";
 
     } else {
       result.style.display="block";
